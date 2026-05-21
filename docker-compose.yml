@@ -1,0 +1,68 @@
+version: "3.8"
+
+services:
+  # PostgreSQL + PostGIS
+  db:
+    image: postgis/postgis:15-3.4
+    container_name: haoshih-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: haoshih
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: haoshih-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+
+  # Meilisearch (中文全文搜尋)
+  search:
+    image: getmeili/meilisearch:v1.7
+    container_name: haoshih-search
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: haoshih_dev_key_change_in_production
+      MEILI_ENV: development
+    ports:
+      - "7700:7700"
+    volumes:
+      - searchdata:/meili_data
+
+  # ETL 排程器
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile.pipeline
+    container_name: haoshih-scheduler
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/haoshih
+      REDIS_URL: redis://redis:6379
+      MEILI_URL: http://search:7700
+      MEILI_KEY: haoshih_dev_key_change_in_production
+    volumes:
+      - ./pipeline:/app/pipeline
+
+volumes:
+  pgdata:
+  redisdata:
+  searchdata:

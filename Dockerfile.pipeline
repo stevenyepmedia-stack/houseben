@@ -1,0 +1,21 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq-dev gcc cron && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY pipeline/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY pipeline/ ./pipeline/
+COPY scripts/ ./scripts/
+
+# Setup cron jobs
+COPY scripts/crontab /etc/cron.d/haoshih-cron
+RUN chmod 0644 /etc/cron.d/haoshih-cron && \
+    crontab /etc/cron.d/haoshih-cron
+
+# Run cron in foreground
+CMD ["cron", "-f"]

@@ -1,0 +1,14 @@
+# 好室宅吉便 ETL 排程
+# ====================================
+
+# 每 10 天：擷取當期實價登錄（每月 1, 11, 21 日凌晨 3 點）
+0 3 1,11,21 * * cd /app && python pipeline/fetch_real_price.py --type current >> /var/log/etl_real_price.log 2>&1
+
+# 每月 5 日：擷取利率資料
+0 4 5 * * cd /app && python pipeline/fetch_interest_rates.py >> /var/log/etl_rates.log 2>&1
+
+# 每月 6 日：同步搜尋索引
+0 5 6 * * cd /app && python pipeline/sync_search_index.py >> /var/log/etl_search.log 2>&1
+
+# 每日：健康檢查
+0 8 * * * cd /app && python scripts/health_check.py >> /var/log/health.log 2>&1

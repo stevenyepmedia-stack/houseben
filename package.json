@@ -1,0 +1,36 @@
+{
+  "name": "haoshih",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:migrate": "psql $DATABASE_URL -f backend/migrations/001_init.sql",
+    "etl:current": "python backend/pipeline/fetch_real_price.py --type current",
+    "etl:backfill": "python backend/pipeline/fetch_real_price.py --type backfill",
+    "etl:rates": "python backend/pipeline/fetch_interest_rates.py",
+    "search:sync": "python backend/pipeline/sync_search_index.py"
+  },
+  "dependencies": {
+    "next": "^14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "@next/font": "^14.2.0",
+    "pg": "^8.12.0",
+    "meilisearch": "^0.38.0",
+    "next-auth": "^4.24.0",
+    "mapbox-gl": "^3.4.0",
+    "recharts": "^2.12.0",
+    "slugify": "^1.6.6",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.3.0",
+    "typescript": "^5.4.0",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "^14.2.0"
+  }
+}
