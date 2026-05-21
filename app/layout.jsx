@@ -1,4 +1,5 @@
 import "./globals.css";
+import AuthProvider from "@/components/AuthProvider";
 
 export const metadata = {
   title: "好室宅吉便 — 用資料說話・陪你找到家",
@@ -20,7 +21,7 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@300;400;500;700;800;900&display=swap" rel="stylesheet" />
       </head>
-      <body>{children}</body>
+      <body><AuthProvider>{children}</AuthProvider></body>
     </html>
   );
 }
