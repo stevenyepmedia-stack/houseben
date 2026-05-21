@@ -1,1 +1,15 @@
 node_modules
+
+# next.js build output
+.next
+/out
+
+# env files (keep secrets out of git)
+.env
+.env*.local
+
+# vercel
+.vercel
+
+# local editor settings
+.claude/settings.local.json
