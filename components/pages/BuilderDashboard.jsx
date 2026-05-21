@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState } from "react";
 
 const MOCK_PROJECTS = [
@@ -226,13 +227,13 @@ export default function BuilderDashboard() {
 
       {/* SIDEBAR */}
       <div style={{ width: 220, background: "#3a3632", padding: "24px 16px", display: "flex", flexDirection: "column", flexShrink: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 8px 24px", borderBottom: "1px solid rgba(255,255,255,0.08)", marginBottom: 20 }}>
+        <Link href="/" style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 8px 24px", borderBottom: "1px solid rgba(255,255,255,0.08)", marginBottom: 20, textDecoration: "none" }}>
           <div style={{ width: 32, height: 32, borderRadius: 10, background: "#5a8a6a", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>🏡</div>
           <div>
             <div style={{ fontSize: 13, fontWeight: 800, color: "#f8f4ec" }}>好室宅吉便</div>
             <div style={{ fontSize: 10, color: "rgba(255,255,255,0.35)" }}>建商管理後台</div>
           </div>
-        </div>
+        </Link>
 
         {sideItems.map(item => (
           <button key={item.id} onClick={() => { setPage(item.id); setEditProject(null); }} style={{

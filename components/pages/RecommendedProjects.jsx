@@ -1,5 +1,8 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Nav from "@/components/Nav";
+import { useFavorites } from "@/components/useFavorites";
 
 const R = [
   { id:"north", label:"北部", n:10 },
@@ -54,7 +57,29 @@ const warmPat = [
   `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='260'%3E%3Crect width='400' height='260' fill='%23e0d8cc'/%3E%3Cellipse cx='280' cy='150' rx='120' ry='80' fill='%23d0c4b0' opacity='0.5'/%3E%3Ccircle cx='100' cy='80' r='60' fill='%23c8b8a0' opacity='0.4'/%3E%3Ccircle cx='200' cy='230' r='35' fill='%23bfb090' opacity='0.3'/%3E%3C/svg%3E")`,
 ];
 
-function Hero({ p }) {
+function FavBtn({ project, fav }) {
+  const router = useRouter();
+  const active = fav.isFavorite(project.name);
+  const onClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!fav.loggedIn) {
+      if (window.confirm("收藏建案需要先登入，要前往登入嗎？")) router.push("/auth/login");
+      return;
+    }
+    fav.toggleFavorite(project);
+  };
+  return (
+    <button onClick={onClick} title={active ? "取消收藏" : "加入收藏"} style={{
+      width:36, height:36, borderRadius:"50%", padding:0,
+      border:"1px solid rgba(0,0,0,0.06)", background:"rgba(255,255,255,0.95)",
+      cursor:"pointer", fontSize:16, display:"flex", alignItems:"center", justifyContent:"center",
+      boxShadow:"0 2px 8px rgba(80,70,50,0.15)",
+    }}>{active ? "❤️" : "🤍"}</button>
+  );
+}
+
+function Hero({ p, fav }) {
   const [hov, setHov] = useState(false);
   return (
     <div onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} style={{
@@ -73,7 +98,8 @@ function Hero({ p }) {
         {p.sp && <span style={{ background:"#e2c87a", color:"#3a2e18", fontSize:11, fontWeight:700, padding:"6px 16px", borderRadius:24 }}>合作建案</span>}
         <span style={{ background:"rgba(255,255,255,0.12)", backdropFilter:"blur(12px)", color:"rgba(255,255,255,0.85)", fontSize:11, fontWeight:600, padding:"6px 16px", borderRadius:24 }}>{p.type}・{p.est}</span>
       </div>
-      {(p.v||p.p)&&<div style={{ position:"absolute", top:20, right:24, display:"flex", gap:6, zIndex:2 }}>
+      <div style={{ position:"absolute", top:18, right:24, zIndex:3 }}><FavBtn project={p} fav={fav}/></div>
+      {(p.v||p.p)&&<div style={{ position:"absolute", top:20, right:70, display:"flex", gap:6, zIndex:2 }}>
         {p.p&&<span style={{ background:"rgba(255,255,255,0.12)", backdropFilter:"blur(10px)", color:"rgba(255,255,255,0.8)", fontSize:10, fontWeight:700, padding:"6px 14px", borderRadius:20 }}>360° 環景</span>}
         {p.v&&<span style={{ background:"rgba(255,255,255,0.12)", backdropFilter:"blur(10px)", color:"rgba(255,255,255,0.8)", fontSize:10, fontWeight:700, padding:"6px 14px", borderRadius:20 }}>▶ 影片</span>}
       </div>}
@@ -99,7 +125,7 @@ function Hero({ p }) {
   );
 }
 
-function Card({ p, idx }) {
+function Card({ p, idx, fav }) {
   const [hov, setHov] = useState(false);
   const bg = warmPat[idx % warmPat.length];
   return (
@@ -125,6 +151,7 @@ function Card({ p, idx }) {
           {p.v&&<span style={{ background:"rgba(255,255,255,0.85)", color:"#5a5550", fontSize:8, fontWeight:800, padding:"3px 8px", borderRadius:12 }}>▶</span>}
         </div>}
         <span style={{ position:"relative", zIndex:1, color:"#fff", fontSize:20, fontWeight:800, fontFamily:"'Noto Sans TC','Nunito',sans-serif", letterSpacing:1, textShadow:"0 2px 8px rgba(0,0,0,0.2)" }}>{p.name}</span>
+        <div style={{ position:"absolute", bottom:14, right:14, zIndex:2 }}><FavBtn project={p} fav={fav}/></div>
       </div>
       <div style={{ padding:"18px 20px 22px", flex:1, display:"flex", flexDirection:"column" }}>
         <div style={{ fontSize:11, color:"#a8a098", marginBottom:8, fontWeight:500 }}>{p.b}｜{p.area}｜{p.est}</div>
@@ -146,7 +173,7 @@ function Card({ p, idx }) {
   );
 }
 
-function Row({ p, i }) {
+function Row({ p, i, fav }) {
   const [hov, setHov] = useState(false);
   return (
     <div onMouseEnter={()=>setHov(true)} onMouseLeave={()=>setHov(false)} style={{
@@ -180,6 +207,7 @@ function Row({ p, i }) {
         <div style={{ fontSize:20, fontWeight:900, color:"#3a3632" }}>{p.price}</div>
         <div style={{ fontSize:10, color:"#b8b0a8" }}>萬/坪</div>
       </div>
+      <div style={{ display:"flex", alignItems:"center", flexShrink:0 }}><FavBtn project={p} fav={fav}/></div>
     </div>
   );
 }
@@ -192,9 +220,11 @@ export default function V5() {
   const hero = all.find(p=>p.sp);
   const grid = all.filter(p=>p!==hero).slice(0,3);
   const list = all.filter(p=>p!==hero&&!grid.includes(p));
+  const fav = useFavorites();
 
   return (
     <div style={{ background:"#f8f4ec", minHeight:"100vh", fontFamily:"'Noto Sans TC',sans-serif" }}>
+      <Nav />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@300;400;500;700;800;900&display=swap');
         @keyframes ri{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -245,7 +275,7 @@ export default function V5() {
         </div>
 
         {/* ═══ HERO ═══ */}
-        {hero && <div style={{ marginBottom:48 }}><Hero p={hero}/></div>}
+        {hero && <div style={{ marginBottom:48 }}><Hero p={hero} fav={fav}/></div>}
 
         {/* ═══ GRID (3 cards, 1 row) ═══ */}
         {grid.length>0 && <>
@@ -254,7 +284,7 @@ export default function V5() {
             <span style={{ fontSize:13, fontWeight:600, color:"#8a8278", letterSpacing:2 }}>推薦建案</span>
           </div>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:20, marginBottom:64 }}>
-            {grid.map((p,i) => <Card key={p.id} p={p} idx={i}/>)}
+            {grid.map((p,i) => <Card key={p.id} p={p} idx={i} fav={fav}/>)}
           </div>
         </>}
 
@@ -266,7 +296,7 @@ export default function V5() {
             <div style={{ flex:1, height:1, background:"#e8e0d4" }}/>
           </div>
           <div style={{ display:"flex", flexDirection:"column", gap:4, marginBottom:40 }}>
-            {list.map((p,i) => <Row key={p.id} p={p} i={i}/>)}
+            {list.map((p,i) => <Row key={p.id} p={p} i={i} fav={fav}/>)}
           </div>
         </>}
 

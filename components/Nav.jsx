@@ -1,16 +1,19 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 
 const NAV_ITEMS = [
   { href: "/projects", label: "精選建案" },
   { href: "/tools/affordability", label: "買房旅程" },
   { href: "/tools/price-check", label: "實用工具" },
   { href: "/dashboard", label: "建商合作" },
+  { href: "/favorites", label: "我的收藏" },
 ];
 
-export default function Nav({ back }) {
+export default function Nav() {
   const pathname = usePathname();
+  const { data: session } = useSession();
 
   return (
     <nav style={{
@@ -25,24 +28,31 @@ export default function Nav({ back }) {
         <span style={{ fontSize: 17, fontWeight: 800, color: "#3a3632", letterSpacing: 1 }}>好室宅吉便</span>
       </Link>
 
-      <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
-        {back ? (
-          <Link href={back} style={{ fontSize: 13, color: "#8a8278", fontWeight: 500, textDecoration: "none" }}>← 返回</Link>
+      <div style={{ display: "flex", gap: 22, alignItems: "center" }}>
+        {NAV_ITEMS.map(item => (
+          <Link key={item.href} href={item.href} style={{
+            fontSize: 13, fontWeight: pathname === item.href ? 700 : 500,
+            color: pathname === item.href ? "#3a3632" : "#8a8278",
+            textDecoration: "none", whiteSpace: "nowrap",
+          }}>{item.label}</Link>
+        ))}
+        {session ? (
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            {session.user?.image && (
+              <img src={session.user.image} alt="" style={{ width: 30, height: 30, borderRadius: "50%" }} />
+            )}
+            <button onClick={() => signOut({ callbackUrl: "/" })} style={{
+              padding: "8px 16px", borderRadius: 20, border: "1px solid #d4c8b0",
+              background: "transparent", color: "#8a8278", fontSize: 12, fontWeight: 700,
+              cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap",
+            }}>登出</button>
+          </div>
         ) : (
-          <>
-            {NAV_ITEMS.map(item => (
-              <Link key={item.href} href={item.href} style={{
-                fontSize: 13, fontWeight: pathname === item.href ? 700 : 500,
-                color: pathname === item.href ? "#3a3632" : "#8a8278",
-                textDecoration: "none",
-              }}>{item.label}</Link>
-            ))}
-            <Link href="/auth/login" style={{
-              padding: "8px 20px", borderRadius: 20, border: "none",
-              background: "#3a3632", color: "#f8f4ec", fontSize: 12, fontWeight: 700,
-              textDecoration: "none",
-            }}>登入</Link>
-          </>
+          <Link href="/auth/login" style={{
+            padding: "8px 20px", borderRadius: 20,
+            background: "#3a3632", color: "#f8f4ec", fontSize: 12, fontWeight: 700,
+            textDecoration: "none", whiteSpace: "nowrap",
+          }}>登入</Link>
         )}
       </div>
     </nav>

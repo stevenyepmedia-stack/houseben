@@ -1,4 +1,5 @@
 "use client";
+import Nav from "@/components/Nav";
 import { useState } from "react";
 
 
@@ -202,6 +203,7 @@ export default function ProjectDetail() {
 
   return (
     <div style={{ background: "#f8f4ec", minHeight: "100vh", fontFamily: "'Noto Sans TC','Nunito',sans-serif" }}>
+      <Nav />
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@300;400;500;700;800;900&display=swap');
         @keyframes su{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
