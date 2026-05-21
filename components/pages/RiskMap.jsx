@@ -248,16 +248,6 @@ export default function RiskMap() {
         input::placeholder{color:#c8c0b8}
       `}</style>
 
-      {/* NAV */}
-      <nav style={{ padding:"14px 24px", display:"flex", justifyContent:"space-between", alignItems:"center", background:"#f8f4ec", zIndex:10 }}>
-        <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-          <div style={{ width:32, height:32, borderRadius:10, background:"#5a8a6a", display:"flex", alignItems:"center", justifyContent:"center", fontSize:16 }}>🏡</div>
-          <span style={{ fontSize:16, fontWeight:800, color:"#3a3632", letterSpacing:1 }}>好室宅吉便</span>
-          <span style={{ fontSize:12, color:"#b8b0a8", marginLeft:8 }}>/ 風險透視圖</span>
-        </div>
-        <span style={{ fontSize:13, color:"#8a8278", fontWeight:500, cursor:"pointer" }}>← 回首頁</span>
-      </nav>
-
       {/* MAIN LAYOUT */}
       <div style={{ flex:1, display:"flex", overflow:"hidden" }}>
 

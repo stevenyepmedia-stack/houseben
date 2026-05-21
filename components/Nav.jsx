@@ -8,7 +8,7 @@ const NAV_ITEMS = [
   { href: "/tools/affordability", label: "買房旅程" },
   { href: "/tools/price-check", label: "實用工具" },
   { href: "/dashboard", label: "建商合作" },
-  { href: "/favorites", label: "我的收藏" },
+  { href: "/favorites", label: "買房中心" },
 ];
 
 export default function Nav() {

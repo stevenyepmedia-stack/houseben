@@ -145,15 +145,6 @@ export default function AIPriceQuery() {
         input::placeholder{color:#c8c0b8}
       `}</style>
 
-      {/* NAV */}
-      <nav style={{ maxWidth: 960, margin: "0 auto", padding: "18px 28px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 36, height: 36, borderRadius: 12, background: "#5a8a6a", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>🏡</div>
-          <span style={{ fontSize: 17, fontWeight: 800, color: "#3a3632", letterSpacing: 1 }}>好室宅吉便</span>
-        </div>
-        <span style={{ fontSize: 13, color: "#8a8278", fontWeight: 500, cursor: "pointer" }}>← 回首頁</span>
-      </nav>
-
       <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 28px 80px" }}>
 
         {/* HEADER */}

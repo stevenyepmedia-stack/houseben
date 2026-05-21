@@ -1,5 +1,8 @@
 "use client";
 import Nav from "@/components/Nav";
+import { useParams, useRouter } from "next/navigation";
+import { getProject } from "@/lib/projects";
+import { useFavorites } from "@/components/useFavorites";
 import { useState } from "react";
 
 
@@ -193,7 +196,22 @@ function TransparencyReport() {
 
 export default function ProjectDetail() {
   const [activeTab, setActiveTab] = useState("info");
-  const p = PROJECT;
+  const params = useParams();
+  const real = getProject(params?.slug);
+  const fav = useFavorites();
+  const router = useRouter();
+  const p = real
+    ? { ...PROJECT, name: real.name, builder: real.b, area: real.area, price: real.price, est: real.est, address: "" }
+    : PROJECT;
+  const faved = real ? fav.isFavorite(real.name) : false;
+  const onFav = () => {
+    if (!real) return;
+    if (!fav.loggedIn) {
+      if (window.confirm("收藏建案需要先登入，要前往登入嗎？")) router.push("/auth/login");
+      return;
+    }
+    fav.toggleFavorite(real);
+  };
   const tabs = [
     { id: "info", label: "建案資訊" },
     { id: "plans", label: "格局規劃" },
@@ -209,17 +227,6 @@ export default function ProjectDetail() {
         @keyframes su{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
         *{box-sizing:border-box;margin:0;padding:0}::-webkit-scrollbar{width:0;height:0}
       `}</style>
-
-      {/* NAV */}
-      <nav style={{ maxWidth: 960, margin: "0 auto", padding: "18px 28px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 36, height: 36, borderRadius: 12, background: "#5a8a6a", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>🏡</div>
-          <span style={{ fontSize: 17, fontWeight: 800, color: "#3a3632", letterSpacing: 1 }}>好室宅吉便</span>
-        </div>
-        <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
-          <span style={{ fontSize: 13, color: "#8a8278", fontWeight: 500, cursor: "pointer" }}>← 返回精選建案</span>
-        </div>
-      </nav>
 
       <div style={{ maxWidth: 960, margin: "0 auto", padding: "0 28px 80px" }}>
 
@@ -273,6 +280,13 @@ export default function ProjectDetail() {
               cursor: "pointer", letterSpacing: 2, fontFamily: "inherit",
               boxShadow: "0 6px 20px rgba(58,54,50,0.15)", marginTop: "auto",
             }}>預約賞屋（免費）</button>
+            {real && (
+              <button onClick={onFav} style={{
+                width: "100%", padding: "13px 0", borderRadius: 20, marginTop: 10,
+                border: "1px solid #d4c8b0", background: "transparent",
+                color: "#6a6258", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "inherit",
+              }}>{faved ? "❤️ 已收藏" : "🤍 加入收藏"}</button>
+            )}
           </div>
         </div>
 
