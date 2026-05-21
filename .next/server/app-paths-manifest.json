@@ -1,1 +1,18 @@
-{}
+{
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/auth/login/page": "app/auth/login/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/projects/page": "app/projects/page.js",
+  "/page": "app/page.js",
+  "/tools/affordability/page": "app/tools/affordability/page.js",
+  "/tools/risk-map/page": "app/tools/risk-map/page.js",
+  "/tools/price-check/page": "app/tools/price-check/page.js",
+  "/projects/[slug]/page": "app/projects/[slug]/page.js",
+  "/api/transactions/nearby/route": "app/api/transactions/nearby/route.js",
+  "/api/risks/route": "app/api/risks/route.js",
+  "/api/transactions/search/route": "app/api/transactions/search/route.js",
+  "/api/rates/route": "app/api/rates/route.js",
+  "/privacy/page": "app/privacy/page.js",
+  "/terms/page": "app/terms/page.js"
+}
